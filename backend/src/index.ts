@@ -1,8 +1,14 @@
 import { Hono } from "hono";
+import { PrismaClient } from "@prisma/client/edge";
+import { withAccelerate } from "@prisma/extension-accelerate";
+import { env } from "hono/adapter";
 
 const app = new Hono();
 // cstand for context which means it has req, res and next in it
 app.post("/api/v1/signup", (c) => {
+  const prisma = new PrismaClient({
+    datasourceUrl: env.DATABASE_URL,
+  }).$extends(withAccelerate());
   return c.text("signup route");
 });
 
