@@ -1,6 +1,6 @@
 # prod
 dist/
-
+.env
 # dev
 .yarn/
 !.yarn/releases
