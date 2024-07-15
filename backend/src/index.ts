@@ -28,7 +28,7 @@ app.use("api/v1/blog/*", async (c, next) => {
 
   const token = header.split("")[1];
 
-  const response = await verify(header, c.env.JWT_SECRET);
+  const response = await verify(token, c.env.JWT_SECRET);
   if (response.id) {
     next();
   } else {
