@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
-import { sign } from "hono/jwt";
+import { sign, verify } from "hono/jwt";
 
 // const app = new Hono<{
 //   Bindings: {
@@ -15,6 +15,27 @@ type Bindings = {
 };
 
 const app = new Hono<{ Bindings: Bindings }>();
+
+app.use("api/v1/blog/*", async (c, next) => {
+  //get the header
+  //verify the header
+  // if the header is correct, we need to call next
+  // if not, we require user 403
+
+  const header = c.req.header("authorization") || "";
+  //now you have to know whether you are getting just token or bearer token
+  //and according to that you have to split the token
+
+  const token = header.split("")[1];
+
+  const response = await verify(header, c.env.JWT_SECRET);
+  if (response.id) {
+    next();
+  } else {
+    c.status(403);
+    return c.json({ error: "unauthorized" });
+  }
+});
 
 // cstand for context which means it has req, res and next in it
 app.post("/api/v1/signup", async (c) => {
